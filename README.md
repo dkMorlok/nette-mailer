@@ -1,4 +1,4 @@
-# Smartsupp/Mailer
+# nette-mailer
 
 ## Installation 
 
