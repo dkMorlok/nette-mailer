@@ -68,33 +68,30 @@ class Mailer
 			return null;
 		}
 
-		$template = $message->getTemplate();
-
 		if (isset($params['filters'])) {
 			foreach ($params['filters'] as $name => $callback) {
-				$template->addFilter($name, $callback);
+				$message->getTemplate()->addFilter($name, $callback);
 			}
 			unset($params['filters']);
 		}
 
 		if (isset($params['attachments'])) {
 			foreach ($params['attachments'] as $name => $content) {
-				$message->addAttachment($name, $content);
+				$message->getMessage()->addAttachment($name, $content);
 			}
 			unset($params['attachments']);
 		}
 
-		$template->setParameters($params);
-		$message->applyTemplate();
+		$message->applyTemplate($params);
 
 		if ($headers) {
 			foreach ($headers as $name => $value) {
-				$message->setHeader($name, $value);
+				$message->getMessage()->setHeader($name, $value);
 			}
 		}
 
 		if ($this->enabled && $to) {
-			$this->sender->send($message, $to, $from, $single);
+			$this->sender->send($message->getMessage(), $to, $from, $single);
 		}
 
 		return $message;

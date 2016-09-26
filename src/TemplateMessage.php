@@ -3,8 +3,9 @@
 namespace Smartsupp\Mailer;
 
 use Nette\Mail;
+use Nette\Object;
 
-class TemplateMessage extends Mail\Message
+class TemplateMessage extends Object
 {
 
 	/** @var string */
@@ -13,10 +14,13 @@ class TemplateMessage extends Mail\Message
 	/** @var Template */
 	private $template;
 
+	/** @var Mail\Message */
+	private $message;
+
 
 	public function __construct(Template $template, $basePath = null)
 	{
-		parent::__construct();
+		$this->message = new Mail\Message();
 		$this->template = $template;
 		$this->basePath = $basePath;
 	}
@@ -28,9 +32,16 @@ class TemplateMessage extends Mail\Message
 	}
 
 
-	public function applyTemplate()
+	public function getMessage()
 	{
-		$this->setHtmlBody($this->template, $this->basePath);
+		return $this->message;
+	}
+
+
+	public function applyTemplate(array $params)
+	{
+		$this->template->setParameters($params);
+		$this->message->setHtmlBody($this->template, $this->basePath);
 	}
 
 }
