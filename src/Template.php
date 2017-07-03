@@ -131,23 +131,4 @@ class Template implements ITemplate
 		$this->params[$name] = $value;
 	}
 
-
-	/**
-	 * Renders template to string.
-	 * @return string
-	 * @throws \Exception
-	 */
-	public function __toString()
-	{
-		try {
-			return $this->render();
-		} catch (\Exception $e) {
-			ob_end_clean();
-			if (func_num_args()) {
-				throw $e;
-			}
-			trigger_error("Exception in " . __METHOD__ . "(): {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}", E_USER_ERROR);
-		}
-	}
-
 }

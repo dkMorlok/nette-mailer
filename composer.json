@@ -7,7 +7,7 @@
         "email": "dkmorlok@gmail.com"
     }],
     "description" : "Template mailer",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "license": "",
     "require": {
         "php": ">=5.4.0",

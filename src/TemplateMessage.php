@@ -26,22 +26,34 @@ class TemplateMessage extends Object
 	}
 
 
+	/**
+	 * @return Template
+	 */
 	public function getTemplate()
 	{
 		return $this->template;
 	}
 
 
+	/**
+	 * @return Mail\Message
+	 */
 	public function getMessage()
 	{
 		return $this->message;
 	}
 
 
+	/**
+	 * @param array $params
+	 * @return string
+	 */
 	public function applyTemplate(array $params)
 	{
 		$this->template->setParameters($params);
-		$this->message->setHtmlBody($this->template, $this->basePath);
+		$string = $this->template->render();
+		$this->message->setHtmlBody($string, $this->basePath);
+		return $string;
 	}
 
 }
