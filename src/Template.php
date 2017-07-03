@@ -79,9 +79,7 @@ class Template implements ITemplate
 	 */
 	public function render()
 	{
-		ob_start();
-		$this->latte->render($this->file, $this->params);
-		$string = ob_get_clean();
+		$string = $this->latte->renderToString($this->file, $this->params);
 		foreach ($this->filters as $filter) {
 			$string = $filter($string);
 		}
