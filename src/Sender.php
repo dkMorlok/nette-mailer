@@ -36,6 +36,15 @@ class Sender
 
 
 	/**
+	 * @return IMailer
+	 */
+	public function getMailer()
+	{
+		return $this->mailer;
+	}
+
+
+	/**
 	 * Send message
 	 * @param Message $message
 	 * @param string|array $emails
@@ -74,7 +83,7 @@ class Sender
 	}
 
 
-	private function sendMessage(Message $message)
+	protected function sendMessage(Message $message)
 	{
 		try {
 			$this->mailer->send($message);
