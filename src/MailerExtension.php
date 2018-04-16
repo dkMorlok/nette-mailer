@@ -7,14 +7,14 @@ use Nette\DI\CompilerExtension;
 class MailerExtension extends CompilerExtension
 {
 
-	public $defaults = array(
+	public $defaults = [
 		'enabled' => true,
-		'mailer' => null,
-		'emails' => array(),
+		'mailer' => '@mail.mailer',
+		'emails' => [],
 		'basePath' => null,
 		'templatesDir' => null,
-		'params' => array()
-	);
+		'params' => [],
+	];
 
 
 	public function loadConfiguration()
@@ -22,23 +22,19 @@ class MailerExtension extends CompilerExtension
 		$container = $this->getContainerBuilder();
 		$config = $this->getConfig($this->defaults);
 
-		$container->addDefinition($this->prefix('sender'))
-			->setClass('Smartsupp\Mailer\Sender', array($config['mailer']))
-			->addSetup('setEmails', array($config['emails']))
-			->addSetup('$catchExceptions', array(!$container->parameters['debugMode']));
-
 		$container->addDefinition($this->prefix('templateFactory'))
 			->setClass('Smartsupp\Mailer\TemplateFactory')
-			->addSetup('setDefaultParameters', array($config['params']))
-			->addSetup('$templatesDir', array($config['templatesDir']));
+			->addSetup('setDefaultParameters', [$config['params']])
+			->addSetup('$templatesDir', [$config['templatesDir']]);
 
-		$container->addDefinition($this->prefix('messageFactory'))
+		$messageFactory = $container->addDefinition($this->prefix('messageFactory'))
 			->setClass('Smartsupp\Mailer\TemplateMessageFactory')
-			->addSetup('$basePath', array($config['basePath']));
+			->addSetup('$basePath', [$config['basePath']]);
 
-		$container->addDefinition($this->prefix('mailer'))
-			->setClass('Smartsupp\Mailer\Mailer')
-			->addSetup('$enabled', array($config['enabled']));
+		$container->addDefinition($this->prefix('templateMailer'))
+			->setClass('Smartsupp\Mailer\Mailer', [$messageFactory, $config['mailer']])
+			->addSetup('$enabled', [$config['enabled']])
+			->addSetup('setEmails', [$config['emails']]);
 	}
 
 }

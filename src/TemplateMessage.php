@@ -15,12 +15,12 @@ class TemplateMessage extends Object
 	private $template;
 
 	/** @var Mail\Message */
-	private $message;
+	private $mail;
 
 
 	public function __construct(Template $template, $basePath = null)
 	{
-		$this->message = new Mail\Message();
+		$this->mail = new Mail\Message();
 		$this->template = $template;
 		$this->basePath = $basePath;
 	}
@@ -38,21 +38,29 @@ class TemplateMessage extends Object
 	/**
 	 * @return Mail\Message
 	 */
-	public function getMessage()
+	public function getMail()
 	{
-		return $this->message;
+		return $this->mail;
 	}
 
 
 	/**
 	 * @param array $params
-	 * @return string
 	 */
-	public function applyTemplate(array $params)
+	public function setParameters(array $params)
 	{
 		$this->template->setParameters($params);
+	}
+
+
+	/**
+	 * Render template and set html body
+	 * @return string
+	 */
+	public function render()
+	{
 		$string = $this->template->render();
-		$this->message->setHtmlBody($string, $this->basePath);
+		$this->mail->setHtmlBody($string, $this->basePath);
 		return $string;
 	}
 

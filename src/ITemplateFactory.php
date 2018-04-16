@@ -12,12 +12,4 @@ interface ITemplateFactory
 	 */
 	function create($name);
 
-
-	/**
-	 * Returns file exists
-	 * @param string $name
-	 * @return boolean
-	 */
-	function exists($name);
-
 }

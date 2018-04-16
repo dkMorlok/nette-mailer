@@ -16,10 +16,10 @@ class Template implements ITemplate
 	private $file;
 
 	/** @var array */
-	private $params = array();
+	private $params = [];
 
 	/** @var array */
-	private $filters = array();
+	private $filters = [];
 
 
 	public function __construct(Latte\Engine $latte)

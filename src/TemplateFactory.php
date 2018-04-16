@@ -14,7 +14,7 @@ class TemplateFactory implements ITemplateFactory
 	private $latteFactory;
 
 	/** @var array */
-	private $defaultParameters = array();
+	private $defaultParameters = [];
 
 
 	public function __construct(ILatteFactory $latteFactory)
@@ -26,12 +26,6 @@ class TemplateFactory implements ITemplateFactory
 	public function setDefaultParameters(array $defaultParameters)
 	{
 		$this->defaultParameters = $defaultParameters;
-	}
-
-
-	public function exists($name)
-	{
-		return is_file($this->formatTemplateName($name));
 	}
 
 

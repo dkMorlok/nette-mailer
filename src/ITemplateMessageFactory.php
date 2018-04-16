@@ -12,12 +12,4 @@ interface ITemplateMessageFactory
 	 */
 	function create($name);
 
-
-	/**
-	 * Is template createable. Returns false if source not exists.
-	 * @param $name
-	 * @return bool
-	 */
-	public function isCreateable($name);
-
 }

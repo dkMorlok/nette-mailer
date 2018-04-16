@@ -19,17 +19,6 @@ class TemplateMessageFactory implements ITemplateMessageFactory
 
 
 	/**
-	 * Is template createable. Returns false if source not exists.
-	 * @param $name
-	 * @return bool
-	 */
-	public function isCreateable($name)
-	{
-		return $this->templateFactory->exists($name);
-	}
-
-
-	/**
 	 * Creates template message.
 	 * @param string $name
 	 * @return TemplateMessage
