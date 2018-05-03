@@ -3,9 +3,8 @@
 namespace Smartsupp\Mailer;
 
 use Nette\Mail;
-use Nette\Object;
 
-class TemplateMessage extends Object
+class TemplateMessage
 {
 
 	/** @var string */
