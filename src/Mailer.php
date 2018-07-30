@@ -70,6 +70,7 @@ class Mailer
 	 * @param boolean $single
 	 * @param array $headers
 	 * @return TemplateMessage
+	 * @throws MailerException
 	 */
 	public function send($name, array $params, $to = null, $from = null, $single = true, array $headers = [])
 	{
@@ -80,16 +81,16 @@ class Mailer
 
 		$message->render();
 
-		if ($this->enabled && $to) {
-			if ($from === null) {
-				$message->getMail()->setFrom($this->emails['default']);
-			} elseif (isset($this->emails[$from])) {
-				$message->getMail()->setFrom($this->emails[$from]);
-			} else {
-				$message->getMail()->setFrom($from);
-			}
+		if ($from === null) {
+			$message->getMail()->setFrom($this->emails['default']);
+		} elseif (isset($this->emails[$from])) {
+			$message->getMail()->setFrom($this->emails[$from]);
+		} else {
+			$message->getMail()->setFrom($from);
+		}
 
-			$emails = is_array($to) ? $to : [$to];
+		$emails = is_array($to) ? $to : ($to ? [$to] : []);
+		if ($this->enabled && count($emails) > 0) {
 			if ($single) {
 				foreach ($emails as $email) {
 					$message->getMail()->clearHeader('To');
