@@ -33,7 +33,7 @@ class Template implements ITemplate
 	 * @param  string
 	 * @return self
 	 */
-	public function setFile($file)
+	public function setFile(string $file)
 	{
 		$this->file = $file;
 		return $this;
@@ -43,7 +43,7 @@ class Template implements ITemplate
 	/**
 	 * @return string
 	 */
-	public function getFile()
+	public function getFile(): string
 	{
 		return $this->file;
 	}

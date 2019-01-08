@@ -17,22 +17,24 @@ class MailerExtension extends CompilerExtension
 	];
 
 
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$container = $this->getContainerBuilder();
 		$config = $this->getConfig($this->defaults);
 
 		$container->addDefinition($this->prefix('templateFactory'))
-			->setClass('Smartsupp\Mailer\TemplateFactory')
+			->setType(\Smartsupp\Mailer\ITemplateFactory::class)
+			->setFactory(\Smartsupp\Mailer\TemplateFactory::class)
 			->addSetup('setDefaultParameters', [$config['params']])
 			->addSetup('$templatesDir', [$config['templatesDir']]);
 
 		$messageFactory = $container->addDefinition($this->prefix('messageFactory'))
-			->setClass('Smartsupp\Mailer\TemplateMessageFactory')
+			->setType(\Smartsupp\Mailer\ITemplateMessageFactory::class)
+			->setFactory(\Smartsupp\Mailer\TemplateMessageFactory::class)
 			->addSetup('$basePath', [$config['basePath']]);
 
 		$container->addDefinition($this->prefix('templateMailer'))
-			->setClass('Smartsupp\Mailer\Mailer', [$messageFactory, $config['mailer']])
+			->setFactory(\Smartsupp\Mailer\Mailer::class, [$messageFactory, $config['mailer']])
 			->addSetup('$enabled', [$config['enabled']])
 			->addSetup('setEmails', [$config['emails']]);
 	}
