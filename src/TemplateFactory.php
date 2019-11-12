@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Smartsupp\Mailer;
 
@@ -29,7 +29,7 @@ class TemplateFactory implements ITemplateFactory
 	}
 
 
-	public function create($name)
+	public function create(string $name): Template
 	{
 		$template = new Template($this->createTemplateEngine());
 		$template->setFile($this->formatTemplateName($name));

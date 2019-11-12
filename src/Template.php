@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Smartsupp\Mailer;
 
@@ -30,7 +30,6 @@ class Template implements ITemplate
 
 	/**
 	 * Sets the path to the template file.
-	 * @param  string
 	 * @return self
 	 */
 	public function setFile(string $file)
@@ -40,9 +39,6 @@ class Template implements ITemplate
 	}
 
 
-	/**
-	 * @return string
-	 */
 	public function getFile(): string
 	{
 		return $this->file;
