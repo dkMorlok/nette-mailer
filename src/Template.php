@@ -30,10 +30,9 @@ class Template implements ITemplate
 
 	/**
 	 * Sets the path to the template file.
-	 * @param string
 	 * @return static
 	 */
-	public function setFile($file)
+	public function setFile(string $file)
 	{
 		$this->file = $file;
 		return $this;
@@ -42,9 +41,8 @@ class Template implements ITemplate
 
 	/**
 	 * Returns the path to the template file.
-	 * @return string|null
 	 */
-	public function getFile()
+	public function getFile(): ?string
 	{
 		return $this->file;
 	}
@@ -52,14 +50,16 @@ class Template implements ITemplate
 
 	/**
 	 * Renders template to output.
-	 * @return void
 	 */
-	public function render()
+	public function render(): void
 	{
 		$this->latte->render($this->file, $this->params);
 	}
 
 
+	/**
+	 * Renders template to string.
+	 */
 	public function renderToString(): string
 	{
 		$string = $this->latte->renderToString($this->file, $this->params);
