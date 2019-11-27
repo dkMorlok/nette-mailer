@@ -3,6 +3,7 @@
 namespace Smartsupp\Mailer;
 
 use Nette\Mail\IMailer;
+use Nette\Mail\SendException;
 
 class Mailer
 {
@@ -20,11 +21,10 @@ class Mailer
 	private $emails;
 
 
-	/**
-	 * @param ITemplateMessageFactory $messageFactory
-	 * @param IMailer $mailer
-	 */
-	public function __construct(ITemplateMessageFactory $messageFactory, IMailer $mailer)
+	public function __construct(
+		ITemplateMessageFactory $messageFactory,
+		IMailer $mailer
+	)
 	{
 		$this->messageFactory = $messageFactory;
 		$this->mailer = $mailer;
@@ -34,45 +34,28 @@ class Mailer
 	/**
 	 * @param string[] $emails
 	 */
-	public function setEmails(array $emails)
+	public function setEmails(array $emails): void
 	{
 		$this->emails = $emails;
 	}
 
 
 	/**
-	 * @return IMailer
-	 */
-	public function getMailer()
-	{
-		return $this->mailer;
-	}
-
-
-	/**
-	 * @return ITemplateMessageFactory
-	 */
-	public function getMessageFactory()
-	{
-		return $this->messageFactory;
-	}
-
-
-	/**
 	 * Generate and send message.
-	 * @param string $name
 	 * @param array $params
-	 * 	Special parameters:
-	 *  	- filters (array of callback)
-	 *		- attachments (array name=>content)
-	 * @param string|array $to
-	 * @param string $from
-	 * @param boolean $single
-	 * @param array $headers
-	 * @return TemplateMessage
-	 * @throws MailerException
+	 *    Special parameters:
+	 *    - filters (array of callback)
+	 *    - attachments (array name => content)
+	 * @param string|array|null $to
 	 */
-	public function send($name, array $params, $to = null, $from = null, $single = true, array $headers = [])
+	public function send(
+		string $name,
+		array $params,
+		$to = null,
+		?string $from = null,
+		bool $single = true,
+		array $headers = []
+	): TemplateMessage
 	{
 		$message = $this->createMessage($name);
 
@@ -89,8 +72,8 @@ class Mailer
 			$message->getMail()->setFrom($from);
 		}
 
-		$emails = is_array($to) ? $to : ($to ? [$to] : []);
-		if ($this->enabled && count($emails) > 0) {
+		$emails = \is_array($to) ? $to : ($to ? [$to] : []);
+		if ($this->enabled && \count($emails) > 0) {
 			if ($single) {
 				foreach ($emails as $email) {
 					$message->getMail()->clearHeader('To');
@@ -110,21 +93,13 @@ class Mailer
 	}
 
 
-	/**
-	 * @param string $name
-	 * @return TemplateMessage
-	 */
-	protected function createMessage($name)
+	protected function createMessage(string $name): TemplateMessage
 	{
 		return $this->messageFactory->create($name);
 	}
 
 
-	/**
-	 * @param TemplateMessage $message
-	 * @param array $params
-	 */
-	protected function applyParams(TemplateMessage $message, array $params)
+	protected function applyParams(TemplateMessage $message, array $params): void
 	{
 		if (isset($params['filters'])) {
 			$this->applyFilters($message, $params['filters']);
@@ -138,11 +113,7 @@ class Mailer
 	}
 
 
-	/**
-	 * @param TemplateMessage $message
-	 * @param array $headers
-	 */
-	protected function applyHeaders($message, array $headers)
+	protected function applyHeaders(TemplateMessage $message, array $headers): void
 	{
 		foreach ($headers as $name => $value) {
 			$message->getMail()->setHeader($name, $value);
@@ -150,11 +121,7 @@ class Mailer
 	}
 
 
-	/**
-	 * @param TemplateMessage $message
-	 * @param array $filters
-	 */
-	protected function applyFilters($message, array $filters)
+	protected function applyFilters(TemplateMessage $message, array $filters): void
 	{
 		foreach ($filters as $name => $callback) {
 			$message->getTemplate()->addFilter($name, $callback);
@@ -162,11 +129,7 @@ class Mailer
 	}
 
 
-	/**
-	 * @param TemplateMessage $message
-	 * @param array $attachments
-	 */
-	protected function applyAttachments($message, array $attachments)
+	protected function applyAttachments(TemplateMessage $message, array $attachments): void
 	{
 		foreach ($attachments as $name => $content) {
 			$message->getMail()->addAttachment($name, $content);
@@ -175,15 +138,13 @@ class Mailer
 
 
 	/**
-	 * Method to send email via mailer. Can be used to handle exceptions.
-	 * @param TemplateMessage $templateMessage
-	 * @throws MailerException
+	 * Method to send email via mailer
 	 */
-	private function sendMessage(TemplateMessage $templateMessage)
+	private function sendMessage(TemplateMessage $templateMessage): void
 	{
 		try {
 			$this->mailer->send($templateMessage->getMail());
-		} catch (\Exception $e) {
+		} catch (SendException $e) {
 			throw new MailerException($e->getMessage(), null, $e);
 		}
 	}
