@@ -12,7 +12,7 @@ class MailerExtension extends CompilerExtension
 	public function getConfigSchema(): Schema
 	{
 		return Expect::structure([
-			'mailer' => Expect::string('@mail.mailer'),
+			'mailer' => Expect::mixed('@mail.mailer'),
 			'enabled' => Expect::bool(true),
 			'emails' => Expect::array(),
 			'basePath' => Expect::string(),
