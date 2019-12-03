@@ -55,7 +55,7 @@ class Mailer
 		?string $from = null,
 		bool $single = true,
 		array $headers = []
-	): TemplateMessage
+	): ?TemplateMessage
 	{
 		$message = $this->createMessage($name);
 
