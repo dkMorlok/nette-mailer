@@ -49,15 +49,16 @@ class Mailer
 	 * @param string|array|null $to
 	 */
 	public function send(
-		string $name,
+		string $template,
+		string $lang,
 		array $params,
-		$to = null,
+		array $to,
 		?string $from = null,
 		bool $single = true,
 		array $headers = []
 	): ?TemplateMessage
 	{
-		$message = $this->createMessage($name);
+		$message = $this->messageFactory->create($template, $lang);
 
 		$this->applyParams($message, $params);
 		$this->applyHeaders($message, $headers);
@@ -90,12 +91,6 @@ class Mailer
 		}
 
 		return $message;
-	}
-
-
-	protected function createMessage(string $name): TemplateMessage
-	{
-		return $this->messageFactory->create($name);
 	}
 
 

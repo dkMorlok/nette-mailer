@@ -5,6 +5,6 @@ namespace Smartsupp\Mailer;
 interface ITemplateMessageFactory
 {
 
-	function create(string $name): TemplateMessage;
+	function create(string $name, string $lang): TemplateMessage;
 
 }

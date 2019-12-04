@@ -18,10 +18,9 @@ class TemplateMessageFactory implements ITemplateMessageFactory
 	}
 
 
-	public function create(string $name): TemplateMessage
+	public function create(string $name, string $lang): TemplateMessage
 	{
-		$message = new TemplateMessage($this->templateFactory->create($name), $this->basePath);
-		return $message;
+		return new TemplateMessage($this->templateFactory->create($name, $lang), $this->basePath);
 	}
 
 }
