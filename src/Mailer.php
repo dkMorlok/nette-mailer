@@ -140,7 +140,7 @@ class Mailer
 		try {
 			$this->mailer->send($templateMessage->getMail());
 		} catch (SendException $e) {
-			throw new MailerException($e->getMessage(), null, $e);
+			throw new MailerException($e->getMessage(), 0, $e);
 		}
 	}
 
