@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Smartsupp\Mailer;
 
@@ -18,15 +18,9 @@ class TemplateMessageFactory implements ITemplateMessageFactory
 	}
 
 
-	/**
-	 * Creates template message.
-	 * @param string $name
-	 * @return TemplateMessage
-	 */
-	public function create($name)
+	public function create(string $name, string $lang): TemplateMessage
 	{
-		$message = new TemplateMessage($this->templateFactory->create($name), $this->basePath);
-		return $message;
+		return new TemplateMessage($this->templateFactory->create($name, $lang), $this->basePath);
 	}
 
 }

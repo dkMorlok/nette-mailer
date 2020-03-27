@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Smartsupp\Mailer;
 
@@ -25,40 +25,27 @@ class TemplateMessage
 	}
 
 
-	/**
-	 * @return Template
-	 */
-	public function getTemplate()
+	public function getTemplate(): Template
 	{
 		return $this->template;
 	}
 
 
-	/**
-	 * @return Mail\Message
-	 */
-	public function getMail()
+	public function getMail(): Mail\Message
 	{
 		return $this->mail;
 	}
 
 
-	/**
-	 * @param array $params
-	 */
-	public function setParameters(array $params)
+	public function setParameters(array $params): void
 	{
 		$this->template->setParameters($params);
 	}
 
 
-	/**
-	 * Render template and set html body
-	 * @return string
-	 */
-	public function render()
+	public function render(): string
 	{
-		$string = $this->template->render();
+		$string = $this->template->renderToString();
 		$this->mail->setHtmlBody($string, $this->basePath);
 		return $string;
 	}

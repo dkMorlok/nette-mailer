@@ -1,42 +1,44 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Smartsupp\Mailer;
 
 use Nette\DI\CompilerExtension;
+use Nette\Schema\Expect;
+use Nette\Schema\Schema;
 
 class MailerExtension extends CompilerExtension
 {
 
-	public $defaults = [
-		'enabled' => true,
-		'mailer' => '@mail.mailer',
-		'emails' => [],
-		'basePath' => null,
-		'templatesDir' => null,
-		'params' => [],
-	];
+	public function getConfigSchema(): Schema
+	{
+		return Expect::structure([
+			'mailer' => Expect::mixed('@mail.mailer'),
+			'enabled' => Expect::bool(true),
+			'emails' => Expect::array(),
+			'basePath' => Expect::string(),
+			'templatesDir' => Expect::string(),
+			'params' => Expect::array(),
+		]);
+	}
 
 
-	public function loadConfiguration(): void
+	public function loadConfiguration()
 	{
 		$container = $this->getContainerBuilder();
-		$config = $this->getConfig($this->defaults);
 
 		$container->addDefinition($this->prefix('templateFactory'))
-			->setType(\Smartsupp\Mailer\ITemplateFactory::class)
-			->setFactory(\Smartsupp\Mailer\TemplateFactory::class)
-			->addSetup('setDefaultParameters', [$config['params']])
-			->addSetup('$templatesDir', [$config['templatesDir']]);
+			->setFactory(TemplateFactory::class)
+			->addSetup('setDefaultParameters', [$this->config->params])
+			->addSetup('$templatesDir', [$this->config->templatesDir]);
 
 		$messageFactory = $container->addDefinition($this->prefix('messageFactory'))
-			->setType(\Smartsupp\Mailer\ITemplateMessageFactory::class)
-			->setFactory(\Smartsupp\Mailer\TemplateMessageFactory::class)
-			->addSetup('$basePath', [$config['basePath']]);
+			->setFactory(TemplateMessageFactory::class)
+			->addSetup('$basePath', [$this->config->basePath]);
 
 		$container->addDefinition($this->prefix('templateMailer'))
-			->setFactory(\Smartsupp\Mailer\Mailer::class, [$messageFactory, $config['mailer']])
-			->addSetup('$enabled', [$config['enabled']])
-			->addSetup('setEmails', [$config['emails']]);
+			->setFactory(Mailer::class, [$messageFactory, $this->config->mailer])
+			->addSetup('$enabled', [$this->config->enabled])
+			->addSetup('setEmails', [$this->config->emails]);
 	}
 
 }

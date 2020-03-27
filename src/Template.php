@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Smartsupp\Mailer;
 
@@ -30,8 +30,7 @@ class Template implements ITemplate
 
 	/**
 	 * Sets the path to the template file.
-	 * @param  string
-	 * @return self
+	 * @return static
 	 */
 	public function setFile(string $file)
 	{
@@ -41,43 +40,27 @@ class Template implements ITemplate
 
 
 	/**
-	 * @return string
+	 * Returns the path to the template file.
 	 */
-	public function getFile(): string
+	public function getFile(): ?string
 	{
 		return $this->file;
 	}
 
 
 	/**
-	 * Registers run-time filter.
-	 * @param  string|NULL
-	 * @param  callable
-	 * @return self
-	 */
-	public function addFilter($name, $callback)
-	{
-		return $this->latte->addFilter($name, $callback);
-	}
-
-
-	/**
-	 * Registers after render filter.
-	 * @param  callable
-	 * @return self
-	 */
-	public function addAfterFilter($callback)
-	{
-		$this->filters[] = $callback;
-		return $this;
-	}
-
-
-	/**
 	 * Renders template to output.
-	 * @return string
 	 */
-	public function render()
+	public function render(): void
+	{
+		$this->latte->render($this->file, $this->params);
+	}
+
+
+	/**
+	 * Renders template to string.
+	 */
+	public function renderToString(): string
 	{
 		$string = $this->latte->renderToString($this->file, $this->params);
 		foreach ($this->filters as $filter) {
@@ -88,47 +71,38 @@ class Template implements ITemplate
 
 
 	/**
-	 * Sets all parameters.
-	 * @param  array
-	 * @return self
+	 * Registers run-time filter.
 	 */
-	public function setParameters(array $params)
+	public function addFilter(?string $name, callable $callback): void
+	{
+		$this->latte->addFilter($name, $callback);
+	}
+
+
+	/**
+	 * Registers after render filter.
+	 */
+	public function addAfterFilter(callable $callback): void
+	{
+		$this->filters[] = $callback;
+	}
+
+
+	/**
+	 * Sets all parameters.
+	 */
+	public function setParameters(array $params): void
 	{
 		$this->params = $params + $this->params;
-		return $this;
 	}
 
 
 	/**
 	 * Sets translate adapter.
-	 * @param ITranslator $translator
-	 * @return self
 	 */
-	public function setTranslator(ITranslator $translator = null)
+	public function setTranslator(?ITranslator $translator = null): void
 	{
-		$this->latte->addFilter('translate', $translator === null ? null : array($translator, 'translate'));
-		return $this;
-	}
-
-
-	/**
-	 * Returns array of all parameters.
-	 * @return array
-	 */
-	public function getParameters()
-	{
-		return $this->params;
-	}
-
-
-	/**
-	 * Sets a template parameter. Do not call directly.
-	 * @param $name
-	 * @param $value
-	 */
-	public function __set($name, $value)
-	{
-		$this->params[$name] = $value;
+		$this->latte->addFilter('translate', $translator === null ? null : [$translator, 'translate']);
 	}
 
 }

@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace Smartsupp\Mailer;
 
+use Latte\Engine;
 use Nette\Bridges\ApplicationLatte\ILatteFactory;
 
 class TemplateFactory implements ITemplateFactory
@@ -23,30 +24,30 @@ class TemplateFactory implements ITemplateFactory
 	}
 
 
-	public function setDefaultParameters(array $defaultParameters)
+	public function setDefaultParameters(array $defaultParameters): void
 	{
 		$this->defaultParameters = $defaultParameters;
 	}
 
 
-	public function create($name)
+	public function create(string $name, string $lang): Template
 	{
 		$template = new Template($this->createTemplateEngine());
-		$template->setFile($this->formatTemplateName($name));
+		$template->setFile($this->formatTemplateName($name, $lang));
 		$template->setParameters($this->defaultParameters);
 		return $template;
 	}
 
 
-	protected function createTemplateEngine()
+	protected function createTemplateEngine(): Engine
 	{
 		return $this->latteFactory->create();
 	}
 
 
-	protected function formatTemplateName($name)
+	protected function formatTemplateName(string $name, string $lang): string
 	{
-		return $this->templatesDir . '/' . $name . '.latte';
+		return "{$this->templatesDir}/{$name}.latte";
 	}
 
 }
