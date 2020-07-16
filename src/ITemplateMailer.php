@@ -10,12 +10,12 @@ interface ITemplateMailer
     /**
      * @param string $template
      * @param string $lang
-     * @param array $params
-     * @param array $to
+     * @param mixed[]|array<mixed> $params
+     * @param string[]|array<string> $to
      * @param string|null $from
-     * @param bool $single
-     * @param array $headers
-     * @param array $attachments
+     * @param bool $single True to send one email per recipient, false to send one email to multiple recipients
+     * @param string[]|string[][]|array<string, string|array<string, string>> $headers header name => header value
+     * @param string[]|array<string, string> $attachments filename => content
      *
      * @throws MailerException
      */
