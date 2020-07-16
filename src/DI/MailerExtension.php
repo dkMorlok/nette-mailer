@@ -54,7 +54,7 @@ class MailerExtension extends CompilerExtension
         $renderers = $this->config->renderers ?? [];
         if (\count($renderers) === 0) {
             $rendererDefinition->setFactory($legacyRendererDefinition);
-        } else if (\count($renderers) === 1 && !isset($this->config->defaultRenderer)) {
+        } elseif (\count($renderers) === 1 && !isset($this->config->defaultRenderer)) {
             $rendererDefinition->setFactory(\reset($renderers));
         } else {
             $rendererDefinition->setFactory(TemplateRendererSelector::class . '::create')
