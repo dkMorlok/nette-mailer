@@ -32,6 +32,32 @@ class TemplateRendererSelectorTest extends TestCase
         self::assertSame('<html>output</html>', $result);
     }
 
+    public function testRenderSuccessDefault(): void
+    {
+        /** @var ITemplateRenderer&MockObject $renderer */
+        $renderer = self::createMock(ITemplateRenderer::class);
+
+        $renderer->expects(self::never())
+            ->method('renderTemplate');
+
+        /** @var ITemplateRenderer&MockObject $defaultRenderer */
+        $defaultRenderer = self::createMock(ITemplateRenderer::class);
+
+        $defaultRenderer->expects(self::once())
+            ->method('renderTemplate')
+            ->with('bad-template-name', 'cs', ['some' => 'data'])
+            ->willReturn('<html>output</html>');
+
+        $templateRenderers = [
+            'template-name' => $defaultRenderer,
+        ];
+        $selector = new TemplateRendererSelector($templateRenderers, $defaultRenderer);
+
+        $result = $selector->renderTemplate('bad-template-name', 'cs', ['some' => 'data']);
+
+        self::assertSame('<html>output</html>', $result);
+    }
+
     public function testRenderUnknownTemplateThrows(): void
     {
         $selector = new TemplateRendererSelector([]);
@@ -43,6 +69,9 @@ class TemplateRendererSelectorTest extends TestCase
 
     public function testCreate(): void
     {
+        /** @var ITemplateRenderer&MockObject $defaultRenderer */
+        $defaultRenderer = self::createMock(ITemplateRenderer::class);
+
         $renderers = [
             /** @var ITemplateRenderer&MockObject $rendererX */
             'x' => $rendererX = self::createMock(ITemplateRenderer::class),
@@ -53,13 +82,13 @@ class TemplateRendererSelectorTest extends TestCase
             'x' => ['template-x1', 'template-x2'],
             'y' => ['template-y'],
         ];
-        $selector = TemplateRendererSelector::create($renderers, $templates);
+        $selector = TemplateRendererSelector::create($renderers, $templates, $defaultRenderer);
 
         $expected = new TemplateRendererSelector([
             'template-x1' => $rendererX,
             'template-x2' => $rendererX,
             'template-y' => $rendererY,
-        ]);
+        ], $defaultRenderer);
         self::assertEquals($expected, $selector);
     }
 }
