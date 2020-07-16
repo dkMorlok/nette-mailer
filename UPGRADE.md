@@ -50,7 +50,7 @@
 ## Deprecated classes and interfaces:
 
 * `TemplateMessage`, `ITemplateMessageFactory`, `TemplateMessageFactory`
-  * there won't be any replacement for these
+  * use `IMessageFactory` and `MessageFactory`
 * `Mailer`
   * use `TemplateMailer` class and `ITemplateMailer` interface instead  
 * `MailerExtension`
