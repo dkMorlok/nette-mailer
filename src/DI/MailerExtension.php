@@ -31,7 +31,7 @@ class MailerExtension extends CompilerExtension
             'params' => Expect::array(),
             'defaultRenderer' => Expect::mixed('@' . $this->prefix('legacyRenderer')),
             'renderers' => Expect::array(),
-            'templateRenderers' => Expect::arrayOf(Expect::arrayOf(Expect::string())),
+            'rendererTemplates' => Expect::arrayOf(Expect::arrayOf(Expect::string())),
         ]);
     }
 
@@ -61,7 +61,7 @@ class MailerExtension extends CompilerExtension
         } else {
             $rendererDefinition->setFactory(TemplateRendererSelector::class . '::create')
                 ->setArgument('renderers', $renderers)
-                ->setArgument('templates', $this->config->templateRenderers ?? [])
+                ->setArgument('rendererTemplates', $this->config->rendererTemplates ?? [])
                 ->setArgument('defaultRenderer', $this->config->defaultRenderer ?? null);
         }
 

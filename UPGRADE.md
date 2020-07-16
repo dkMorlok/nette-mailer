@@ -6,6 +6,7 @@
   * similar to `Mailer` but does not return anything, just throws `MailerException` on error
   * passing filters to template as `$params['filters']` is not supported
     * provide all filters to your template factory in advance
+    * `LegacyTemplateRenderer` still supports this feature but it may be deprecated in next major version (3.0)
   * passing attachments through `$params['attachments']` is not supported
     * an optional argument `$attachments` is added to the method instead
 
@@ -30,7 +31,7 @@
 
 * `LegacyTemplateRenderer`
   * renderer that uses the old `ITemplateFactory` to render latte template
-  * will be deprecated in next major version along with associated symbols
+  * may be deprecated in future major version and replaced with a proper latte renderer
 
 * `TemplateRendererSelector`
   * renderer that allows switching between various renderers based on template name.
@@ -39,15 +40,15 @@
   * replaces `MailerExtension`
   * none of the deprecated classes is added to the container
   * the new and non-deprecated classes are added to the container
-  * all previous config options still work
+  * all previous config options still work but most are distributed among different services
   * `defaultRenderer` option can be set to an `ITemplateRenderer` service
     * it is set to the `LegacyTemplateRenderer` by default
   * `renderers` option can be set to map of string to `ITemplateRenderer` instances
-  * `templateRenderers` can be set to map of renderer names to array of template names
+  * `rendererTemplates` can be set to map of renderer names to array of template names
     * the keys will be used to select a renderer from the `renderers` array that will render a given template
     * templates not provided will be rendered by the renderer set as `defaultRenderer`
 
-## Deprecated classes and interfaces:
+## Deprecated classes and interfaces will be removed in 3.0
 
 * `TemplateMessage`, `ITemplateMessageFactory`, `TemplateMessageFactory`
   * use `IMessageFactory` and `MessageFactory`

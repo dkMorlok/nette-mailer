@@ -29,18 +29,21 @@ class TemplateRendererSelector implements ITemplateRenderer
 
     /**
      * @param array<string, ITemplateRenderer>|ITemplateRenderer[] $renderers Renderer name => renderer instance
-     * @param array<string, array<string>>|string[][] $templates Renderer name => array of supported template names
+     * @param array<string, array<string>>|string[][] $rendererTemplates Renderer name => array of template names
      * @param ITemplateRenderer|null $defaultRenderer
      * @return static
      */
-    public static function create(array $renderers, array $templates, ?ITemplateRenderer $defaultRenderer = null): self
-    {
+    public static function create(
+        array $renderers,
+        array $rendererTemplates,
+        ?ITemplateRenderer $defaultRenderer = null
+    ): self {
         if (\count($renderers) < 2 && ($defaultRenderer === null || \count($renderers) < 1)) {
             throw new \InvalidArgumentException('At least 2 renderers are required.');
         }
 
         $templateRenderers = [];
-        foreach ($templates as $rendererName => $templateNames) {
+        foreach ($rendererTemplates as $rendererName => $templateNames) {
             if (!isset($renderers[$rendererName])) {
                 throw new \InvalidArgumentException(\sprintf('Renderer %s not provided.', $rendererName));
             }
