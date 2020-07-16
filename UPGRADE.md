@@ -1,14 +1,5 @@
-# 2.0.* -> 2.1.*
+# 2.0 -> 2.1
 
-## Deprecated classes and interfaces:
-
-* `TemplateMessage`, `ITemplateMessageFactory`, `TemplateMessageFactory`
-  * there won't be any replacement for these
-* `Mailer`
-  * use `TemplateMailer` class and `ITemplateMailer` interface instead  
-* `MailerExtension`
-  * use `DI\MailerExtension` instead
-     
 ## New Classes and Interfaces
 
 * `ITemplateMailer`
@@ -18,8 +9,15 @@
   * passing attachments through `$params['attachments']` is not supported
     * an optional argument `$attachments` is added to the method instead
 
+* `IMessageFactory`
+  * creates `Nette\Mail\Message` instances using most of the `ITemplateMailer::send` arguments.
+
+* `MessageFactory`
+  * default implementation of `IMessageFactory`
+  * contains all current behaviour of `Mailer` related to creating the message instance
+
 * `TemplateMailer`
-  * default implementation of `ITemplateMailer`
+  * default implementation of `ITemplateMailer` using `IMessageFactory` and `Nette\Mail\Mailer`
 
 * `DisabledMailer`
   * implementation if `ITemplateMailer` that does nothing and never throws
@@ -49,3 +47,12 @@
     * the keys will be used to select a renderer from the `renderers` array that will render a given template
     * templates not provided will be rendered by the renderer set as `defaultRenderer`
 
+## Deprecated classes and interfaces:
+
+* `TemplateMessage`, `ITemplateMessageFactory`, `TemplateMessageFactory`
+  * there won't be any replacement for these
+* `Mailer`
+  * use `TemplateMailer` class and `ITemplateMailer` interface instead  
+* `MailerExtension`
+  * use `DI\MailerExtension` instead
+     

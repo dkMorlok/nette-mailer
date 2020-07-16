@@ -13,30 +13,19 @@ class TemplateMailer implements ITemplateMailer
 
     private NetteMailer $mailer;
 
-    private ITemplateRenderer $renderer;
-
-    /** @var string[]  */
-    private array $emails;
-
-    private ?string $basePath;
+    private IMessageFactory $messageFactory;
 
 
     /**
      * @param NetteMailer $mailer
-     * @param ITemplateRenderer $renderer
-     * @param string[] $emails
-     * @param string|null $basePath
+     * @param IMessageFactory $messageFactory
      */
     public function __construct(
         NetteMailer $mailer,
-        ITemplateRenderer $renderer,
-        array $emails = [],
-        ?string $basePath = null
+        IMessageFactory $messageFactory
     ) {
         $this->mailer = $mailer;
-        $this->renderer = $renderer;
-        $this->emails = $emails;
-        $this->basePath = $basePath;
+        $this->messageFactory = $messageFactory;
     }
 
 
@@ -56,31 +45,14 @@ class TemplateMailer implements ITemplateMailer
 
         $headers = $this->removeDuplicateEmails($to, $headers);
 
-        $message = new Message();
-
-        foreach ($headers as $name => $value) {
-            $message->setHeader($name, $value);
-        }
-
-        if ($from === null) {
-            $message->setFrom($this->emails['default']);
-        } elseif (isset($this->emails[$from])) {
-            $message->setFrom($this->emails[$from]);
-        } else {
-            $message->setFrom($from);
-        }
-
-        foreach ($attachments as $name => $content) {
-            $message->addAttachment($name, $content);
-        }
-
-        try {
-            $body = $this->renderer->renderTemplate($template, $lang, $params);
-        } catch (TemplateRendererException $e) {
-            throw new MailerException('Template rendering failed: ' . $e->getMessage(), $e->getCode(), $e);
-        }
-
-        $message->setHtmlBody($body, $this->basePath);
+        $message = $this->messageFactory->createMessage(
+            $template,
+            $lang,
+            $params,
+            $from,
+            $headers,
+            $attachments
+        );
 
         if ($single) {
             foreach ($to as $email) {

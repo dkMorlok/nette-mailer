@@ -9,10 +9,10 @@ use Nette\Mail\Message;
 use Nette\Mail\SendException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Smartsupp\Mailer\ITemplateRenderer;
+use Smartsupp\Mailer\IMessageFactory;
 use Smartsupp\Mailer\MailerException;
+use Smartsupp\Mailer\MessageException;
 use Smartsupp\Mailer\TemplateMailer;
-use Smartsupp\Mailer\TemplateRendererException;
 
 class TemplateMailerTest extends TestCase
 {
@@ -20,18 +20,20 @@ class TemplateMailerTest extends TestCase
     {
         /** @var Mailer&MockObject $netteMailer */
         $netteMailer = self::createMock(Mailer::class);
-        /** @var ITemplateRenderer&MockObject $renderer */
-        $renderer = self::createMock(ITemplateRenderer::class);
+        /** @var IMessageFactory&MockObject $messageFactory */
+        $messageFactory = self::createMock(IMessageFactory::class);
 
-        $renderer->expects(self::once())
-            ->method('renderTemplate')
-            ->with('template', 'sk', ['some' => 'data'])
-            ->willReturn('<html>body</html>');
+        $message = new Message();
+        $messageFactory->expects(self::once())
+            ->method('createMessage')
+            ->with('template', 'sk', ['some' => 'data'], 'from@example.com', [], [])
+            ->willReturn($message);
 
         $netteMailer->expects(self::exactly(2))
-            ->method('send');
+            ->method('send')
+            ->with($message);
 
-        $mailer = new TemplateMailer($netteMailer, $renderer);
+        $mailer = new TemplateMailer($netteMailer, $messageFactory);
 
         $mailer->send(
             'template',
@@ -46,27 +48,20 @@ class TemplateMailerTest extends TestCase
     {
         /** @var Mailer&MockObject $netteMailer */
         $netteMailer = self::createMock(Mailer::class);
-        /** @var ITemplateRenderer&MockObject $renderer */
-        $renderer = self::createMock(ITemplateRenderer::class);
+        /** @var IMessageFactory&MockObject $messageFactory */
+        $messageFactory = self::createMock(IMessageFactory::class);
 
-        $renderer->expects(self::once())
-            ->method('renderTemplate')
-            ->with('template', 'sk', ['some' => 'data'])
-            ->willReturn('<html>body</html>');
+        $message = new Message();
+        $messageFactory->expects(self::once())
+            ->method('createMessage')
+            ->with('template', 'sk', ['some' => 'data'], 'test <from@example.com>', [], [])
+            ->willReturn($message);
 
         $netteMailer->expects(self::once())
             ->method('send')
-            ->willReturnCallback(function (Message $message) {
-                self::assertSame([
-                    'receiver1@example.com' => null,
-                    'receiver2@example.com' => null
-                ], $message->getHeader('To'));
-                self::assertSame(['from@example.com' => 'test'], $message->getFrom());
-                self::assertSame('<html>body</html>', $message->getHtmlBody());
-                return null;
-            });
+            ->with($message);
 
-        $mailer = new TemplateMailer($netteMailer, $renderer);
+        $mailer = new TemplateMailer($netteMailer, $messageFactory);
 
         $mailer->send(
             'template',
@@ -82,16 +77,16 @@ class TemplateMailerTest extends TestCase
     {
         /** @var Mailer&MockObject $netteMailer */
         $netteMailer = self::createMock(Mailer::class);
-        /** @var ITemplateRenderer&MockObject $renderer */
-        $renderer = self::createMock(ITemplateRenderer::class);
+        /** @var IMessageFactory&MockObject $messageFactory */
+        $messageFactory = self::createMock(IMessageFactory::class);
 
-        $renderer->expects(self::never())
-            ->method('renderTemplate');
+        $messageFactory->expects(self::never())
+            ->method('createMessage');
 
         $netteMailer->expects(self::never())
             ->method('send');
 
-        $mailer = new TemplateMailer($netteMailer, $renderer);
+        $mailer = new TemplateMailer($netteMailer, $messageFactory);
 
         $mailer->send(
             'template',
@@ -106,20 +101,20 @@ class TemplateMailerTest extends TestCase
     {
         /** @var Mailer&MockObject $netteMailer */
         $netteMailer = self::createMock(Mailer::class);
-        /** @var ITemplateRenderer&MockObject $renderer */
-        $renderer = self::createMock(ITemplateRenderer::class);
+        /** @var IMessageFactory&MockObject $messageFactory */
+        $messageFactory = self::createMock(IMessageFactory::class);
 
-        $renderer->expects(self::once())
-            ->method('renderTemplate')
-            ->with('template', 'sk', ['some' => 'data'])
-            ->willThrowException(new TemplateRendererException());
+        $messageFactory->expects(self::once())
+            ->method('createMessage')
+            ->with('template', 'sk', ['some' => 'data'], 'from@example.com', [], [])
+            ->willThrowException(new MessageException());
 
         $netteMailer->expects(self::never())
             ->method('send');
 
-        $mailer = new TemplateMailer($netteMailer, $renderer);
+        $mailer = new TemplateMailer($netteMailer, $messageFactory);
 
-        self::expectException(MailerException::class);
+        self::expectException(MessageException::class);
 
         $mailer->send(
             'template',
@@ -134,19 +129,21 @@ class TemplateMailerTest extends TestCase
     {
         /** @var Mailer&MockObject $netteMailer */
         $netteMailer = self::createMock(Mailer::class);
-        /** @var ITemplateRenderer&MockObject $renderer */
-        $renderer = self::createMock(ITemplateRenderer::class);
+        /** @var IMessageFactory&MockObject $messageFactory */
+        $messageFactory = self::createMock(IMessageFactory::class);
 
-        $renderer->expects(self::once())
-            ->method('renderTemplate')
-            ->with('template', 'sk', ['some' => 'data'])
-            ->willReturn('<html>body</html>');
+        $message = new Message();
+        $messageFactory->expects(self::once())
+            ->method('createMessage')
+            ->with('template', 'sk', ['some' => 'data'], 'from@example.com', [], [])
+            ->willReturn($message);
 
         $netteMailer->expects(self::once())
             ->method('send')
+            ->with($message)
             ->willThrowException(new SendException());
 
-        $mailer = new TemplateMailer($netteMailer, $renderer);
+        $mailer = new TemplateMailer($netteMailer, $messageFactory);
 
         self::expectException(MailerException::class);
 

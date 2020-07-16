@@ -8,10 +8,12 @@ use Nette\DI\CompilerExtension;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 use Smartsupp\Mailer\DisabledMailer;
+use Smartsupp\Mailer\IMessageFactory;
 use Smartsupp\Mailer\ITemplateFactory;
 use Smartsupp\Mailer\ITemplateMailer;
 use Smartsupp\Mailer\ITemplateRenderer;
 use Smartsupp\Mailer\LegacyTemplateRenderer;
+use Smartsupp\Mailer\MessageFactory;
 use Smartsupp\Mailer\TemplateRendererSelector;
 use Smartsupp\Mailer\TemplateFactory;
 use Smartsupp\Mailer\TemplateMailer;
@@ -63,12 +65,16 @@ class MailerExtension extends CompilerExtension
                 ->setArgument('defaultRenderer', $this->config->defaultRenderer ?? null);
         }
 
+        $container->addDefinition($this->prefix('messageFactory'))
+            ->setType(IMessageFactory::class)
+            ->setFactory(MessageFactory::class)
+            ->setArgument('emails', $this->config->emails ?? [])
+            ->setArgument('basePath', $this->config->basePath ?? null);
+
         $mailerDefinition = $container->addDefinition($this->prefix('mailer'));
         $mailerDefinition->setType(ITemplateMailer::class);
         if ($this->config->enabled ?? false) {
             $mailerDefinition->setFactory(TemplateMailer::class);
-            $mailerDefinition->setArgument('emails', $this->config->emails ?? []);
-            $mailerDefinition->setArgument('basePath', $this->config->basePath ?? null);
         } else {
             $mailerDefinition->setFactory(DisabledMailer::class);
         }
