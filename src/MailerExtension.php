@@ -8,6 +8,9 @@ use Nette\DI\CompilerExtension;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 
+/**
+ * @deprecated use DI\MailerExtension
+ */
 class MailerExtension extends CompilerExtension
 {
 
