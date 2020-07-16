@@ -49,11 +49,37 @@ class TemplateRendererSelectorTest extends TestCase
             ->willReturn('<html>output</html>');
 
         $templateRenderers = [
-            'template-name' => $defaultRenderer,
+            'template-name' => $renderer,
         ];
         $selector = new TemplateRendererSelector($templateRenderers, $defaultRenderer);
 
         $result = $selector->renderTemplate('bad-template-name', 'cs', ['some' => 'data']);
+
+        self::assertSame('<html>output</html>', $result);
+    }
+
+    public function testRenderSuccessNotDefault(): void
+    {
+        /** @var ITemplateRenderer&MockObject $renderer */
+        $renderer = self::createMock(ITemplateRenderer::class);
+
+        $renderer->expects(self::once())
+            ->method('renderTemplate')
+            ->with('template-name', 'cs', ['some' => 'data'])
+            ->willReturn('<html>output</html>');
+
+        /** @var ITemplateRenderer&MockObject $defaultRenderer */
+        $defaultRenderer = self::createMock(ITemplateRenderer::class);
+
+        $defaultRenderer->expects(self::never())
+            ->method('renderTemplate');
+
+        $templateRenderers = [
+            'template-name' => $renderer,
+        ];
+        $selector = new TemplateRendererSelector($templateRenderers, $defaultRenderer);
+
+        $result = $selector->renderTemplate('template-name', 'cs', ['some' => 'data']);
 
         self::assertSame('<html>output</html>', $result);
     }
