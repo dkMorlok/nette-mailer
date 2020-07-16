@@ -47,7 +47,8 @@ class TemplateMailer implements ITemplateMailer
         array $to,
         ?string $from = null,
         bool $single = true,
-        array $headers = []
+        array $headers = [],
+        array $attachments = []
     ): void {
         if (!$to) {
             return;
@@ -67,6 +68,10 @@ class TemplateMailer implements ITemplateMailer
             $message->setFrom($this->emails[$from]);
         } else {
             $message->setFrom($from);
+        }
+
+        foreach ($attachments as $name => $content) {
+            $message->addAttachment($name, $content);
         }
 
         try {

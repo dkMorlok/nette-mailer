@@ -13,7 +13,8 @@ class DisabledMailer implements ITemplateMailer
         array $to,
         ?string $from = null,
         bool $single = true,
-        array $headers = []
+        array $headers = [],
+        array $attachments = []
     ): void {
     }
 }

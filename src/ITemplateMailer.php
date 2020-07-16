@@ -15,6 +15,7 @@ interface ITemplateMailer
      * @param string|null $from
      * @param bool $single
      * @param array $headers
+     * @param array $attachments
      *
      * @throws MailerException
      */
@@ -25,6 +26,7 @@ interface ITemplateMailer
         array $to,
         ?string $from = null,
         bool $single = true,
-        array $headers = []
+        array $headers = [],
+        array $attachments = []
     ): void;
 }
