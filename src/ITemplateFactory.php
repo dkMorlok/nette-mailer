@@ -1,10 +1,10 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace Smartsupp\Mailer;
 
 interface ITemplateFactory
 {
-
-	function create(string $name, string $lang): Template;
-
+    public function create(string $name, string $lang): Template;
 }
