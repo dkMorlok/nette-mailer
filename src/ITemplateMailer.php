@@ -6,7 +6,6 @@ namespace Smartsupp\Mailer;
 
 interface ITemplateMailer
 {
-
     /**
      * @param string $template
      * @param string $lang

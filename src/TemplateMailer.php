@@ -10,7 +10,6 @@ use Nette\Mail\SendException;
 
 class TemplateMailer implements ITemplateMailer
 {
-
     private NetteMailer $mailer;
 
     private IMessageFactory $messageFactory;

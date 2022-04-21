@@ -10,7 +10,6 @@ use Nette\Localization\ITranslator;
 
 class Template implements ITemplate
 {
-
     /** @var Latte\Engine */
     private $latte;
 

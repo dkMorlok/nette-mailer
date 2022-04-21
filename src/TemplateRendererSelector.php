@@ -9,7 +9,6 @@ namespace Smartsupp\Mailer;
  */
 class TemplateRendererSelector implements ITemplateRenderer
 {
-
     /** @var ITemplateRenderer[]|array<string, ITemplateRenderer> */
     private array $renderers;
 
@@ -62,7 +61,7 @@ class TemplateRendererSelector implements ITemplateRenderer
     }
 
 
-    public function renderTemplate(string $templateName, string $lang, array $params): string
+    public function renderTemplate(string $templateName, string $lang, array $params): RenderedMessage
     {
         if (!isset($this->renderers[$templateName])) {
             if ($this->defaultRenderer === null) {
