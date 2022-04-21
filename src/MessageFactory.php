@@ -58,12 +58,26 @@ class MessageFactory implements IMessageFactory
         }
 
         try {
-            $body = $this->renderer->renderTemplate($template, $lang, $params);
+            $result = $this->renderer->renderTemplate($template, $lang, $params);
         } catch (TemplateRendererException $e) {
             throw new MessageException('Template rendering failed: ' . $e->getMessage(), $e->getCode(), $e);
         }
 
-        $message->setHtmlBody($body, $this->basePath);
+        if ($result->subject) {
+            $message->setSubject($result->subject);
+        }
+
+        if ($result->text) {
+            $message->setBody($result->text);
+        }
+
+        // Nette\Mail\Message::setHtmlBody adds some magic if subject or plain body is not set
+        // and so they must be set first to avoid the magic when subject/text is returned by renderer
+        // while making the magic happen if they are not returned by renderer
+        if ($result->html) {
+            $message->setHtmlBody($result->html);
+        }
+
         return $message;
     }
 }

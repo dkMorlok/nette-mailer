@@ -9,7 +9,6 @@ use Nette\Bridges\ApplicationLatte\ILatteFactory;
 
 class TemplateFactory implements ITemplateFactory
 {
-
     /** @var string */
     public $templatesDir;
 

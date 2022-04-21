@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Smartsupp\Mailer\ITemplateRenderer;
 use Smartsupp\Mailer\MessageException;
 use Smartsupp\Mailer\MessageFactory;
+use Smartsupp\Mailer\RenderedMessage;
 use Smartsupp\Mailer\TemplateRendererException;
 
 final class MessageFactoryTest extends TestCase
@@ -23,17 +24,18 @@ final class MessageFactoryTest extends TestCase
         $template = 'template-name';
         $lang = 'cs';
         $params = ['some' => 'data'];
-        $renderedTemplate = '<html>out</html>';
+        $renderedMessage = new RenderedMessage('sub', '<html>html</html>', 'txt');
         $from = 'from-name <from@email.test>';
         $headers['Cc'] = 'cc@email.test';
         $attachments = [
             'test.txt' => 'hello',
         ];
 
+
         $renderer->expects(self::once())
             ->method('renderTemplate')
             ->with($template, $lang, $params)
-            ->willReturn($renderedTemplate);
+            ->willReturn($renderedMessage);
 
         $messageFactory = new MessageFactory($renderer, $emails, $basePath);
 
@@ -46,7 +48,9 @@ final class MessageFactoryTest extends TestCase
             $attachments
         );
 
-        self::assertSame($renderedTemplate, $message->getHtmlBody());
+        self::assertSame($renderedMessage->subject, $message->getSubject());
+        self::assertSame($renderedMessage->html, $message->getHtmlBody());
+        self::assertSame($renderedMessage->text, $message->getBody());
         self::assertSame(['from@email.test' => 'from-name'], $message->getFrom());
         self::assertArrayHasKey('Cc', $message->getHeaders());
         self::assertSame($headers['Cc'], $message->getHeaders()['Cc']);

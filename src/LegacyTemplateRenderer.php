@@ -6,7 +6,6 @@ namespace Smartsupp\Mailer;
 
 class LegacyTemplateRenderer implements ITemplateRenderer
 {
-
     private ITemplateFactory $templateFactory;
 
 
@@ -16,7 +15,7 @@ class LegacyTemplateRenderer implements ITemplateRenderer
     }
 
 
-    public function renderTemplate(string $templateName, string $lang, array $params): string
+    public function renderTemplate(string $templateName, string $lang, array $params): RenderedMessage
     {
         $template = $this->templateFactory->create($templateName, $lang);
 
@@ -33,9 +32,11 @@ class LegacyTemplateRenderer implements ITemplateRenderer
         $template->setParameters($params);
 
         try {
-            return $template->renderToString();
+            $html = $template->renderToString();
         } catch (\Throwable $e) {
             throw new TemplateRendererException($e->getMessage(), (int) $e->getCode(), $e);
         }
+
+        return new RenderedMessage('', $html, '');
     }
 }

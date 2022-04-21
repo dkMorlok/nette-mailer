@@ -7,6 +7,7 @@ namespace Smartsupp\Tests\Mailer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Smartsupp\Mailer\ITemplateRenderer;
+use Smartsupp\Mailer\RenderedMessage;
 use Smartsupp\Mailer\TemplateRendererException;
 use Smartsupp\Mailer\TemplateRendererSelector;
 
@@ -17,10 +18,12 @@ class TemplateRendererSelectorTest extends TestCase
         /** @var ITemplateRenderer&MockObject $renderer */
         $renderer = self::createMock(ITemplateRenderer::class);
 
+        $expectedResult = new RenderedMessage('', '', '');
+
         $renderer->expects(self::once())
             ->method('renderTemplate')
             ->with('template-name', 'cs', ['some' => 'data'])
-            ->willReturn('<html>output</html>');
+            ->willReturn($expectedResult);
 
         $templateRenderers = [
             'template-name' => $renderer,
@@ -29,7 +32,7 @@ class TemplateRendererSelectorTest extends TestCase
 
         $result = $selector->renderTemplate('template-name', 'cs', ['some' => 'data']);
 
-        self::assertSame('<html>output</html>', $result);
+        self::assertSame($expectedResult, $result);
     }
 
     public function testRenderSuccessDefault(): void
@@ -43,10 +46,12 @@ class TemplateRendererSelectorTest extends TestCase
         /** @var ITemplateRenderer&MockObject $defaultRenderer */
         $defaultRenderer = self::createMock(ITemplateRenderer::class);
 
+        $expectedResult = new RenderedMessage('', '', '');
+
         $defaultRenderer->expects(self::once())
             ->method('renderTemplate')
             ->with('bad-template-name', 'cs', ['some' => 'data'])
-            ->willReturn('<html>output</html>');
+            ->willReturn($expectedResult);
 
         $templateRenderers = [
             'template-name' => $renderer,
@@ -55,7 +60,7 @@ class TemplateRendererSelectorTest extends TestCase
 
         $result = $selector->renderTemplate('bad-template-name', 'cs', ['some' => 'data']);
 
-        self::assertSame('<html>output</html>', $result);
+        self::assertSame($expectedResult, $result);
     }
 
     public function testRenderSuccessNotDefault(): void
@@ -63,10 +68,12 @@ class TemplateRendererSelectorTest extends TestCase
         /** @var ITemplateRenderer&MockObject $renderer */
         $renderer = self::createMock(ITemplateRenderer::class);
 
+        $expectedResult = new RenderedMessage('', '', '');
+
         $renderer->expects(self::once())
             ->method('renderTemplate')
             ->with('template-name', 'cs', ['some' => 'data'])
-            ->willReturn('<html>output</html>');
+            ->willReturn($expectedResult);
 
         /** @var ITemplateRenderer&MockObject $defaultRenderer */
         $defaultRenderer = self::createMock(ITemplateRenderer::class);
@@ -81,7 +88,7 @@ class TemplateRendererSelectorTest extends TestCase
 
         $result = $selector->renderTemplate('template-name', 'cs', ['some' => 'data']);
 
-        self::assertSame('<html>output</html>', $result);
+        self::assertSame($expectedResult, $result);
     }
 
     public function testRenderUnknownTemplateThrows(): void

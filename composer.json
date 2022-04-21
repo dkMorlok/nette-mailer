@@ -9,15 +9,20 @@
     "description" : "Template mailer",
     "license": "",
     "require": {
-        "php": ">=7.4",
-        "latte/latte": "^2.4 || ^3.0",
-        "nette/application": "^2.4 || ^3.0",
-        "nette/di": "^2.4.10 || ^3.0",
-        "nette/mail": "^2.4 || ^3.0"
+        "php": ">=8.1",
+        "latte/latte": "^2.11 || ^3.0",
+        "nette/application": "^3.1",
+        "nette/di": "^3.0",
+        "nette/mail": "^3.1"
     },
     "autoload": {
         "psr-4": {
             "Smartsupp\\Mailer\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Smartsupp\\Tests\\Mailer\\": "tests"
         }
     },
     "require-dev": {

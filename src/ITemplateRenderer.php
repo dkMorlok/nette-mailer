@@ -6,14 +6,13 @@ namespace Smartsupp\Mailer;
 
 interface ITemplateRenderer
 {
-
     /**
      * @param string $templateName
      * @param string $lang
      * @param array $params
-     * @return string
+     * @return RenderedMessage
      *
      * @throws TemplateRendererException if unknown template, lang or inappropriate params are passed
      */
-    public function renderTemplate(string $templateName, string $lang, array $params): string;
+    public function renderTemplate(string $templateName, string $lang, array $params): RenderedMessage;
 }

@@ -6,5 +6,4 @@ namespace Smartsupp\Mailer;
 
 class MailerException extends \Exception
 {
-
 }

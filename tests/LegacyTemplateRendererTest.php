@@ -36,7 +36,9 @@ class LegacyTemplateRendererTest extends TestCase
 
         $result = $renderer->renderTemplate('test', 'en', ['data']);
 
-        self::assertSame('result', $result);
+        self::assertSame('', $result->subject);
+        self::assertSame('result', $result->html);
+        self::assertSame('', $result->text);
     }
 
     public function testTemplateRenderToStringThrows(): void
